@@ -1,0 +1,12 @@
+<ul class="list-group">
+  <% @sites.each do |site| %>
+    <%= link_to(site_path(site.id)) do %>
+      <li class="list-group-item">
+        <span class="badge"> <%= site.bookmarks.count %></span>
+        <%= site.url %>
+      </li>
+    <% end %>
+  <% end %>
+</ul>
+
+<%= link_to 'New Bookmark', new_bookmark_path %>

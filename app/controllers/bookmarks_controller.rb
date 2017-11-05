@@ -3,11 +3,12 @@
 class BookmarksController < ApplicationController
   before_action :set_bookmark, only: %i[show edit update destroy]
 
-  # GET /bookmarks
+  # GET sites/:site_id/bookmarks
   def index
-    @bookmarks = Bookmark.all
+    @bookmarks = site.bookmarks
   end
 
+  # GET sites/1/bookmarks/:id
   def show; end
 
   def new
@@ -20,7 +21,10 @@ class BookmarksController < ApplicationController
   def create
     @bookmark = Bookmark.new(bookmark_params)
     if @bookmark.save
-      redirect_to bookmarks_path, notice: 'Bookmark was successfully created.'
+      redirect_to(
+        site_path(@bookmark.site.id),
+        notice: 'Bookmark was successfully created.'
+      )
     else
       render :new
     end
@@ -29,7 +33,10 @@ class BookmarksController < ApplicationController
   # PATCH/PUT /bookmarks/1
   def update
     if @bookmark.update(bookmark_params)
-      redirect_to bookmarks_path, notice: 'Bookmark was successfully updated.'
+      redirect_to(
+        site_path(@bookmark.site.id),
+        notice: 'Bookmark was successfully updated.'
+      )
     else
       render :edit
     end
@@ -38,16 +45,20 @@ class BookmarksController < ApplicationController
   # DELETE /bookmarks/1
   def destroy
     @bookmark.destroy
-    redirect_to bookmarks_url, notice: 'Bookmark was successfully destroyed.'
+    redirect_to root_url, notice: 'Bookmark was successfully destroyed.'
   end
 
   private
 
   def set_bookmark
-    @bookmark = Bookmark.find(params[:id])
+    @bookmark = site.bookmarks.find(params[:id])
   end
 
   def bookmark_params
     params.require(:bookmark).permit(:title, :url, :shortening)
+  end
+
+  def site
+    @site ||= Site.find(params[:site_id])
   end
 end

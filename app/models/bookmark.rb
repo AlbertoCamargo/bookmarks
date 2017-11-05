@@ -8,7 +8,8 @@ class Bookmark < ApplicationRecord
 
   # Callbacks
   before_save :set_site
-  before_save :set_shortening_url, if: Proc.new { |b| b.shortening.blank? }
+  before_save :set_shortening_url,
+    if: Proc.new { |b| b.shortening.blank? || (b.url_changed? && !b.shortening_changed?) }
 
   def site
     Site.find(site_id)

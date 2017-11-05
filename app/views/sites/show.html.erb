@@ -1,0 +1,40 @@
+<table class="table table-bordred ">
+  <thead>
+    <ol class="breadcrumb">
+      <li><a href=<%= sites_path %>>Sites</a></li>
+      <li class= 'active'><%= @site.url %> </li>
+    </ol>
+
+    <tr>
+      <th>Title</th>
+      <th>Url</th>
+      <th>Shortening</th>
+      <th colspan="1"></th>
+
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @bookmarks.each do |bookmark| %>
+      <tr>
+        <td><%= bookmark.title %></td>
+        <td><%= link_to(bookmark.url, bookmark.url) %></td>
+        <td><%= link_to(bookmark.shortening, bookmark.shortening) %></td>
+        <td>
+          <div class="btn-group" role="group" aria-label="Default button group">
+            <%= link_to(edit_site_bookmark_path(@site, bookmark)) do %>
+              <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></button>
+            <% end %>
+            <%= link_to(site_bookmark_path(@site, bookmark), method: :delete, data: { confirm: 'Are you sure?' }) do %>
+              <button type="button" class="btn btn-default"> <span class="glyphicon glyphicon-remove"></span></button>
+            <% end %>
+          </div>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Bookmark', new_bookmark_path %>

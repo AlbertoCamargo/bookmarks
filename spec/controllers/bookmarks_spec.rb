@@ -5,7 +5,7 @@ RSpec.describe BookmarksController, type: :controller do
 
   describe 'GET #index' do
     it 'returns http success' do
-      get :index
+      get :index, params: { site_id: bookmark.site.id }
       expect(:bookmarks).not_to be_empty
       expect(response).to have_http_status(:success)
     end
@@ -13,26 +13,26 @@ RSpec.describe BookmarksController, type: :controller do
 
   describe 'GET #show' do
     it 'returns http success' do
-      get :show, params: { id: bookmark.id }
+      get :show, params: { id: bookmark.id, site_id: bookmark.site.id }
       expect(response).to have_http_status(:success)
     end
 
     it 'returns http not found status code' do
       expect do
-        get :show, params: { id: 'not exists' }
+        get :show, params: { id: 'not exists', site_id: bookmark.site.id }
       end.to raise_exception(ActiveRecord::RecordNotFound)
     end
   end
 
   describe 'GET #edit' do
     it 'returns http success' do
-      get :edit, params: { id: bookmark.id }
+      get :edit, params: { id: bookmark.id, site_id: bookmark.site.id }
       expect(response).to have_http_status(:success)
     end
 
     it 'returns http not found status code' do
       expect do
-        get :edit, params: { id: 'not exists' }
+        get :edit, params: { id: 'not exists', site_id: bookmark.site.id }
       end.to raise_exception(ActiveRecord::RecordNotFound)
     end
   end
@@ -45,7 +45,8 @@ RSpec.describe BookmarksController, type: :controller do
         shortening: 'https://goo.gl/AfoQuV'
       }
       post :create, params: { bookmark: data }
-      expect(response).to redirect_to(bookmarks_path)
+      b = Bookmark.find_by_url('https://github.com/rspec/')
+      expect(response).to redirect_to(site_path(b.site.id))
     end
 
     it 'creates a bookmark' do
@@ -72,31 +73,43 @@ RSpec.describe BookmarksController, type: :controller do
 
   describe 'PUTS #update' do
     it 'redirects to index bookmarks' do
-      put :update, params: { id: bookmark.id, bookmark: { title: 'changed' } }
-      expect(response).to redirect_to(bookmarks_path)
+      put :update, params: {
+        id: bookmark.id,
+        bookmark: { title: 'changed' },
+        site_id: bookmark.site.id
+      }
+      expect(response).to redirect_to(site_path(bookmark.site.id))
     end
 
     it 'updated a bookmark' do
       expected = 'changed'
-      put :update, params: { id: bookmark.id, bookmark: { title: expected } }
+      put :update, params: {
+        id: bookmark.id,
+        bookmark: { title: expected },
+        site_id: bookmark.site.id
+      }
       expect(bookmark.reload.title).to eq(expected)
     end
 
     it 'does not updates a bookmark because is invalid data' do
-      put :update, params: { id: bookmark.id, bookmark: { url: '' } }
+      put :update, params: {
+        id: bookmark.id,
+        bookmark: { url: '' },
+        site_id: bookmark.site.id
+      }
       expect(bookmark.reload.url).to_not eq('')
     end
   end
 
   describe 'DELETE #destroy' do
     it 'redirects to index bookmarks' do
-      delete :destroy, params: { id: bookmark.id }
-      expect(response).to redirect_to(bookmarks_path)
+      delete :destroy, params: { id: bookmark.id, site_id: bookmark.site.id }
+      expect(response).to redirect_to(root_path)
     end
 
     it 'deletes a bookmark' do
       expect do
-        delete :destroy, params: { id: bookmark.id }
+        delete :destroy, params: { id: bookmark.id, site_id: bookmark.site.id }
       end.to change { Bookmark.count }.by(-1)
     end
   end
