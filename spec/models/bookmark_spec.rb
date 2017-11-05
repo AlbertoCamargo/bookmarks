@@ -18,6 +18,12 @@ RSpec.describe Bookmark, type: :model do
       expect(Bookmark.new(title: 'valid')).to_not be_valid
       expect(Bookmark.new(url: 'https://github.com/rspec/')).to_not be_valid
       expect(Bookmark.new(url: '/rspec/', title: 'title')).to_not be_valid
+      invalid_data = {
+        title: 'valid',
+        url: 'https://github.com/rspec/',
+        shortening: 'I N V A L I D'
+      }
+      expect(Bookmark.new(invalid_data)).to_not be_valid
     end
 
     it 'has errrors. not site and bad url' do
@@ -49,6 +55,26 @@ RSpec.describe Bookmark, type: :model do
           shortening: 'https://goo.gl/AfoQuV'
         )
       end.to change { Site.count }.by(1)
+    end
+
+    it 'generate a shortening if it is not provided' do
+      url = 'https://relishapp.com/rspec/rspec-expectations'
+      expected = Google::UrlShortener::Url.new(long_url: url).shorten!
+      b = Bookmark.create(
+        title: 'valid',
+        url: url
+      )
+      expect(b.shortening).to eq(expected)
+    end
+
+    it 'does not generate a shortening if it is provided' do
+      expected  = 'https://goo.gl/RANDOM'
+      b = Bookmark.create(
+        title: 'valid',
+        url: 'https://relishapp.com/rspec/rspec-expectations',
+        shortening: expected
+      )
+      expect(b.reload.shortening).to eq(expected)
     end
   end
 

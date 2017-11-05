@@ -4,9 +4,11 @@ class Bookmark < ApplicationRecord
   # Validations
   validates :url, :title, presence: true, uniqueness: true
   validate :validate_url
+  validate :validate_shortening, unless: Proc.new { |b| b.shortening.blank? }
 
   # Callbacks
   before_save :set_site
+  before_save :set_shortening_url, if: Proc.new { |b| b.shortening.blank? }
 
   def site
     Site.find(site_id)
@@ -26,9 +28,24 @@ class Bookmark < ApplicationRecord
   end
 
   def validate_url
+    errors.add(:url, 'invalid url') unless uri_is_valid?(url)
+  end
+
+  def validate_shortening
+    return if uri_is_valid?(shortening)
+    errors.add(:shortening, 'invalid url shortening')
+  end
+
+  def set_shortening_url
+    url_shortener_object = Google::UrlShortener::Url.new(long_url: url)
+    self.shortening = url_shortener_object.shorten!
+  end
+
+  def uri_is_valid?(url)
     uri = URI.parse(url)
-    errors.add(:url, 'invalid host') if uri.host.blank?
+    return false if uri.host.blank?
+    true
   rescue URI::InvalidURIError
-    errors.add(:url, 'invalid url')
+    false
   end
 end
