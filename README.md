@@ -1,24 +1,19 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+![screenshot1](https://raw.githubusercontent.com/AlbertoCamargo/bookmarks/master/public/Screen%20Shot%202017-11-06%20at%2001.53.16.png)
 
-Things you may want to cover:
+![screenshot2](https://raw.githubusercontent.com/AlbertoCamargo/bookmarks/master/public/Screen%20Shot%202017-11-06%20at%2001.54.26.png)
+
 
 * Ruby version
 
+  2.4.1
+
+* Rails version
+
+  5.0.0
+
 * System dependencies
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+  PostgreSQL
+  
