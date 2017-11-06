@@ -3,13 +3,10 @@
 class BookmarksController < ApplicationController
   before_action :set_bookmark, only: %i[show edit update destroy]
 
-  # GET sites/:site_id/bookmarks
+  # GET /bookmarks
   def index
-    @bookmarks = site.bookmarks
+    @bookmarks = Bookmark.all
   end
-
-  # GET sites/1/bookmarks/:id
-  def show; end
 
   def new
     @bookmark = Bookmark.new
@@ -45,7 +42,10 @@ class BookmarksController < ApplicationController
   # DELETE /bookmarks/1
   def destroy
     @bookmark.destroy
-    redirect_to root_url, notice: 'Bookmark was successfully destroyed.'
+    redirect_to(
+      site_path(@bookmark.site.id),
+      notice: 'Bookmark was successfully destroyed.'
+    )
   end
 
   private

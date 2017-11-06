@@ -4,12 +4,13 @@ class Bookmark < ApplicationRecord
   # Validations
   validates :url, :title, presence: true, uniqueness: true
   validate :validate_url
-  validate :validate_shortening, unless: Proc.new { |b| b.shortening.blank? }
+  validate :validate_shortening, unless: proc { |b| b.shortening.blank? }
 
   # Callbacks
   before_save :set_site
-  before_save :set_shortening_url,
-    if: Proc.new { |b| b.shortening.blank? || (b.url_changed? && !b.shortening_changed?) }
+  before_save :set_shortening_url, if: proc { |b|
+    b.shortening.blank? || (b.url_changed? && !b.shortening_changed?)
+  }
 
   def site
     Site.find(site_id)

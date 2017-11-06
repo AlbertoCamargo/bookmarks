@@ -11,19 +11,6 @@ RSpec.describe BookmarksController, type: :controller do
     end
   end
 
-  describe 'GET #show' do
-    it 'returns http success' do
-      get :show, params: { id: bookmark.id, site_id: bookmark.site.id }
-      expect(response).to have_http_status(:success)
-    end
-
-    it 'returns http not found status code' do
-      expect do
-        get :show, params: { id: 'not exists', site_id: bookmark.site.id }
-      end.to raise_exception(ActiveRecord::RecordNotFound)
-    end
-  end
-
   describe 'GET #edit' do
     it 'returns http success' do
       get :edit, params: { id: bookmark.id, site_id: bookmark.site.id }
@@ -104,7 +91,7 @@ RSpec.describe BookmarksController, type: :controller do
   describe 'DELETE #destroy' do
     it 'redirects to index bookmarks' do
       delete :destroy, params: { id: bookmark.id, site_id: bookmark.site.id }
-      expect(response).to redirect_to(root_path)
+      expect(response).to redirect_to(site_path(bookmark.site.id))
     end
 
     it 'deletes a bookmark' do

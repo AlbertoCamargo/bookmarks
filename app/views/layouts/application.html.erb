@@ -38,13 +38,14 @@
   </head>
   <body>
 
-    <div class="navbar navbar-default navbar-static-top">
+    <div class="navbar navbar-default bg-faded">
       <div class="container">
-        <%= link_to 'Bookmarks', root_path, class: 'navbar-brand' %>
+        <%= link_to root_path, class: 'form-inline navbar-form pull-left' do %>
+          <%= image_tag('bookmarks-icon.png',size: '36x36') %>
+        <% end %>
         <div class="navbar-collapse collapse navbar-responsive-collapse">
           <ul class="nav navbar-nav">
-            <li><%= link_to "Link1", "/path1"  %></li>
-            <li><%= link_to "Link2", "/path2"  %></li>
+            <li><%= link_to 'bookmarks', bookmarks_path %></li>
           </ul>
           <%= menu_group pull: :right do %>
             <%= form_tag(search_path, method: 'get', class: 'form-inline navbar-form pull-right') do %>
